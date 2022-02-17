@@ -80,6 +80,21 @@ public class TutorialController {
 		}
 	}
 
+	@PutMapping("/tutorials/title/{title}")
+	public ResponseEntity<Tutorial> updateTutorialByTitle(@PathVariable("title") String title, @RequestBody Tutorial tutorial) {
+
+		try {
+			List<Tutorial> tutorials = tutorialRepository.findByTitleContaining(title.replace('+',' '));
+			Tutorial _tutorial = tutorials.iterator().next();
+			_tutorial.setTitle(tutorial.getTitle());
+			_tutorial.setDescription(tutorial.getDescription());
+			_tutorial.setPublished(tutorial.isPublished());
+			return new ResponseEntity<>(tutorialRepository.save(_tutorial), HttpStatus.OK);
+		}catch (Exception e){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 //HttpStatus
 	@DeleteMapping("/tutorials/{id}")
 	public ResponseEntity<String> deleteTutorial(@PathVariable("id") long id) {
